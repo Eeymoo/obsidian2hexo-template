@@ -3,17 +3,17 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 7zMonkey' BLOG
+title: Eeymoo' BLOG
 subtitle: ''
-description: 7zMonkey' BLOG 记录 7zMonkey 的 BLOG
-keywords: BLOG,7zMonkey,WEB
-author: 7zMonkey
+description: Eeymoo' BLOG 记录 Eeymoo 的 BLOG
+keywords: BLOG,Eeymoo,WEB
+author: Eeymoo
 language: cmn-Hans
 timezone: ''
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: https://www.7zMonkey.tech/
+url: https://blog.eeymoo.com/
 permalink: blog/:hash.html
 permalink_defaults:
 pretty_urls:
