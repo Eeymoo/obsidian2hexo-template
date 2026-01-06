@@ -1,5 +1,4 @@
 name: hexo-build-deploy
-# Hexo模板仓库主流程：拉取Obsidian内容 → 生成静态文件 → 部署到Github Pages
 on:
   push:
     branches:
@@ -16,7 +15,8 @@ on:
 
 env:
   OBSIDIAN_REPO: Eeymoo/Obsidian
-  BLOG_PAGES_REPO: Eeymoo/Eeymoo.github.io
+  BLOG_PAGES_REPO: Eeymoo/Eeymoo.github.io  # 目标Pages仓库
+  BLOG_PAGES_BRANCH: main                   # Pages仓库的部署分支（默认用main）
   NODE_VERSION: '18'
   OBSIDIAN_CONTENT_PATH: '博客'
 
@@ -69,26 +69,52 @@ jobs:
           mv hexo-template/public/* blog/
           ls -a blog
 
-      # 关键修改1：将artifact名称改为github-pages（符合deploy-pages@v4的默认要求）
-      - name: Upload GitHub Pages Artifact
+      # 上传静态文件作为Artifact，供部署任务使用
+      - name: Upload Static Files Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: github-pages  # 必须是这个名称，不能自定义
-          path: blog/         # 部署文件的目录
+          name: blog-static-files
+          path: blog/
           retention-days: 1
 
+  # 关键修改：改用Git Push部署到独立的Pages仓库
   deploy-to-pages:
     needs: generate-static-files
     runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      # 关键修改2：无需手动下载artifact！deploy-pages@v4会自动拉取名为github-pages的artifact
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-        # 移除了错误的folder参数，该Action不需要任何额外参数（仅需默认配置）
+      # 步骤1：下载生成的静态文件
+      - name: Download Static Files
+        uses: actions/download-artifact@v4
+        with:
+          name: blog-static-files
+          path: blog
+
+      # 步骤2：拉取目标Pages仓库（Eeymoo.github.io）
+      - name: Checkout Pages Repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.BLOG_PAGES_REPO }}
+          path: pages-repo
+          ref: ${{ env.BLOG_PAGES_BRANCH }}  # 切换到部署分支
+          token: ${{ secrets.SERVICE_ACCOUNT_KEY }}  # 授权推送
+
+      # 步骤3：将静态文件覆盖到Pages仓库
+      - name: Copy Static Files to Pages Repo
+        run: |
+          rm -rf pages-repo/*  # 清空旧文件（避免冗余）
+          cp -r blog/* pages-repo/  # 复制新生成的静态文件
+
+      # 步骤4：提交并推送到Pages仓库
+      - name: Push to Pages Repository
+        working-directory: pages-repo
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add .
+          # 容错：如果没有变更，避免提交失败
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Deploy blog: $(date +'%Y-%m-%d %H:%M:%S')"
+          git push origin ${{ env.BLOG_PAGES_BRANCH }}
