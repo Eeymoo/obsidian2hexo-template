@@ -1,7 +1,6 @@
 name: hexo-build-deploy
 # Hexo模板仓库主流程：拉取Obsidian内容 → 生成静态文件 → 部署到Github Pages
 on:
-  # 1. 自身推送触发（模板/配置变更）
   push:
     branches:
       - main
@@ -11,40 +10,34 @@ on:
       - 'source/**'
       - 'package.json'
       - '.github/workflows/**'
-  # 2. 接收Obsidian仓库的触发事件
   repository_dispatch:
       types:
         - obsidian-content-update
 
-# 环境变量（统一管理仓库信息）
 env:
-  OBSIDIAN_REPO: Eeymoo/Obsidian          # Obsidian私有仓库
-  BLOG_PAGES_REPO: Eeymoo/Eeymoo.github.io # Github Pages仓库
-  NODE_VERSION: '18'                      # 稳定版Node版本
-  OBSIDIAN_CONTENT_PATH: '博客'            # Obsidian中博客内容的目录
+  OBSIDIAN_REPO: Eeymoo/Obsidian
+  BLOG_PAGES_REPO: Eeymoo/Eeymoo.github.io
+  NODE_VERSION: '18'
+  OBSIDIAN_CONTENT_PATH: '博客'
 
 jobs:
-  # 核心任务：拉取内容 + 生成静态文件
   generate-static-files:
     runs-on: ubuntu-latest
     steps:
-      # 步骤1：拉取Hexo模板仓库（当前仓库）
       - name: Checkout Hexo Template
         uses: actions/checkout@v4
         with:
           path: hexo-template
           fetch-depth: 0
 
-      # 步骤2：拉取Obsidian私有仓库（需SERVICE_ACCOUNT_KEY权限）
       - name: Checkout Obsidian Docs
         uses: actions/checkout@v4
         with:
           repository: ${{ env.OBSIDIAN_REPO }}
           path: obsidian-doc
           fetch-depth: 0
-          token: ${{ secrets.SERVICE_ACCOUNT_KEY }} # 访问私有Obsidian仓库的密钥
+          token: ${{ secrets.SERVICE_ACCOUNT_KEY }}
 
-      # 步骤3：配置Node环境 + 缓存依赖
       - name: Set up Node.js & Cache Dependencies
         uses: actions/setup-node@v4
         with:
@@ -52,12 +45,9 @@ jobs:
           cache: 'npm'
           cache-dependency-path: hexo-template/package-lock.json
 
-      # 步骤4：将Obsidian博客内容移动到Hexo目录
       - name: Move Obsidian Content to Hexo
         run: |
-          # 创建Hexo文章目录（确保存在）
           mkdir -p hexo-template/source/_posts
-          # 容错：检查Obsidian博客目录是否存在
           if [ -d "obsidian-doc/${{ env.OBSIDIAN_CONTENT_PATH }}" ]; then
             mv obsidian-doc/${{ env.OBSIDIAN_CONTENT_PATH }}/* hexo-template/source/_posts/
             echo "成功移动Obsidian博客内容"
@@ -65,29 +55,28 @@ jobs:
             echo "Obsidian博客目录不存在，跳过移动"
           fi
 
-      # 步骤5：安装Hexo依赖 + 生成静态文件
       - name: Install Hexo & Generate Static Files
         run: |
           cd hexo-template
-          npm install --no-fund --no-audit # 加速安装
+          npm install --no-fund --no-audit
           npm install -g hexo-cli
-          hexo clean # 清理旧缓存
-          hexo generate # 生成静态文件
+          hexo clean
+          hexo generate
 
-      # 步骤6：准备部署目录并上传产物
-      - name: Prepare & Upload Static Files
+      - name: Prepare Static Files
         run: |
           mkdir -p blog
           mv hexo-template/public/* blog/
-          ls -a blog # 调试：打印部署目录内容
-      - name: Upload Artifact
+          ls -a blog
+
+      # 关键修改1：将artifact名称改为github-pages（符合deploy-pages@v4的默认要求）
+      - name: Upload GitHub Pages Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: blog-static-files
-          path: blog/
+          name: github-pages  # 必须是这个名称，不能自定义
+          path: blog/         # 部署文件的目录
           retention-days: 1
 
-  # 部署任务：依赖生成任务完成后部署到Github Pages
   deploy-to-pages:
     needs: generate-static-files
     runs-on: ubuntu-latest
@@ -98,14 +87,8 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Download Static Files
-        uses: actions/download-artifact@v4
-        with:
-          name: blog-static-files
-          path: blog
-
+      # 关键修改2：无需手动下载artifact！deploy-pages@v4会自动拉取名为github-pages的artifact
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        with:
-          folder: blog # 指定部署目录
+        # 移除了错误的folder参数，该Action不需要任何额外参数（仅需默认配置）
