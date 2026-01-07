@@ -10,7 +10,7 @@
   <div class="space-y-3 mb-8">
     <% page.posts.each(article => { %>
       <!-- 单篇文章项：现代卡片样式 + hover 交互 -->
-      <div class="category-item group p-4 bg-white rounded-lg border border-gray-100 hover:shadow-sm transition-all duration-300">
+      <div class="category-item group p-4 bg-white rounded-lg transition-all duration-300">
         <!-- 文章标题链接 -->
         <a 
           href="<%=url_for(article.path)%>" 
@@ -39,11 +39,11 @@
     next_text: '<i class="fa fa-chevron-right"></i>',
     // 样式类自定义
     wrap_class: 'pagination flex gap-1',
-    active_class: 'bg-primary text-white px-3 py-1.5 rounded-md border border-primary',
-    page_class: 'px-3 py-1.5 rounded-md border border-gray-200 hover:border-primary hover:text-primary transition-colors duration-300',
-    prev_class: 'px-3 py-1.5 rounded-md border border-gray-200 hover:border-primary hover:text-primary transition-colors duration-300',
-    next_class: 'px-3 py-1.5 rounded-md border border-gray-200 hover:border-primary hover:text-primary transition-colors duration-300',
-    disabled_class: 'px-3 py-1.5 rounded-md border border-gray-100 text-gray-400 cursor-not-allowed'
+    active_class: 'bg-primary text-white px-3 py-1.5 rounded-md',
+    page_class: 'px-3 py-1.5 rounded-md hover:text-primary transition-colors duration-300',
+    prev_class: 'px-3 py-1.5 rounded-md hover:text-primary transition-colors duration-300',
+    next_class: 'px-3 py-1.5 rounded-md hover:text-primary transition-colors duration-300',
+    disabled_class: 'px-3 py-1.5 rounded-md text-gray-400 cursor-not-allowed'
   })%>
 </div>
 
@@ -59,7 +59,7 @@
     }
     /* 空状态样式（可选：如果分类下无文章时添加） */
     .empty-category {
-      @apply text-gray-500 text-center py-8 bg-gray-50 rounded-xl border border-gray-100;
+      @apply text-gray-500 text-center py-8 bg-gray-50 rounded-xl;
     }
   }
 </style>

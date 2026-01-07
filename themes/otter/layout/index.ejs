@@ -1,32 +1,36 @@
-<div class="about-profile">
+<!-- 简化版 About 页面 - 滚动检测自动跳转 + 底部滚动提示 -->
+<div class="about-profile py-4">
   <!-- 头像（替换为你的头像链接） -->
-  <img src="<%=config.root%>images/avatar.jpg" alt="Avatar" class="about-avatar">
-  
-  <div class="about-meta">
-    <h2 class="text-2xl font-bold text-gray-900 mb-2"><%=config.author%></h2>
+  <img src="<%=config.root%>images/avatar.jpg" alt="Avatar" class="about-avatar w-24 h-24 rounded-full mx-auto mb-4">
+
+  <div class="about-meta text-center md:text-left">
+    <h2 class="text-2xl font-bold text-gray-900 mb-2">
+      <%=config.author%>
+    </h2>
     <p class="text-gray-600 mb-3">Web Developer & Tech Enthusiast</p>
     <!-- 社交链接（按需添加） -->
-    <div class="flex justify-center md:justify-start gap-4">
-      <a href="https://github.com/你的用户名" class="text-neutral hover:text-primary" target="_blank">
+    <div class="flex justify-center md:justify-start gap-4 mb-6">
+      <a href="https://github.com/你的用户名" class="text-neutral hover:text-primary transition-colors" target="_blank">
         <i class="fa fa-github text-xl"></i>
       </a>
-      <a href="mailto:你的邮箱@example.com" class="text-neutral hover:text-primary">
+      <a href="mailto:你的邮箱@example.com" class="text-neutral hover:text-primary transition-colors">
         <i class="fa fa-envelope text-xl"></i>
       </a>
-      <a href="https://twitter.com/你的用户名" class="text-neutral hover:text-primary" target="_blank">
+      <a href="https://twitter.com/你的用户名" class="text-neutral hover:text-primary transition-colors" target="_blank">
         <i class="fa fa-twitter text-xl"></i>
       </a>
     </div>
   </div>
 </div>
 
-<div class="about-section">
+<div class="about-section my-6 py-2">
   <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
     <i class="fa fa-info-circle text-primary/80"></i>
     About This Blog
   </h3>
   <p class="text-gray-700 leading-relaxed mb-3">
-    This blog is built with Hexo and Tailwind CSS, focusing on sharing knowledge about web development, programming, and technology. 
+    This blog is built with Hexo and Tailwind CSS, focusing on sharing knowledge about web development, programming, and
+    technology.
     The goal is to create a simple, modern, and easy-to-read platform for technical sharing.
   </p>
   <p class="text-gray-700 leading-relaxed">
@@ -34,7 +38,7 @@
   </p>
 </div>
 
-<div class="about-section">
+<div class="about-section my-6 py-2">
   <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
     <i class="fa fa-code text-primary/80"></i>
     Skills & Interests
@@ -59,12 +63,81 @@
   </ul>
 </div>
 
-<div class="about-section">
+<div class="about-section my-6 py-2">
   <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
     <i class="fa fa-handshake-o text-primary/80"></i>
     Get In Touch
   </h3>
   <p class="text-gray-700 leading-relaxed">
-    If you have any questions, suggestions, or want to collaborate on a project, feel free to reach out via email or social media.
+    If you have any questions, suggestions, or want to collaborate on a project, feel free to reach out via email or
+    social media.
   </p>
 </div>
+
+<!-- 滚动提示 - 移到页面最底部 -->
+<div class="scroll-hint text-center mt-12 mb-4 animate-bounce">
+  <i class="fa fa-mouse-pointer text-primary text-xl mb-2"></i>
+  <p class="text-gray-600">向下滚动查看文章 →</p>
+</div>
+
+<!-- 滚动检测 + 自动跳转脚本 -->
+<script>
+  // 标记是否已跳转，避免重复触发
+  let hasRedirected = false;
+
+
+  // 滚动事件处理函数
+  function handleScrollToBottom() {
+    // 仅在未跳转且滚动到底部时触发
+    if (!hasRedirected && isScrollToBottom()) {
+      hasRedirected = true; // 标记为已跳转
+
+      // 移除滚动事件监听器，避免重复触发
+      window.removeEventListener('scroll', handleScrollToBottom);
+
+      // 添加平滑过渡动画
+      document.documentElement.style.transition = 'all 0.6s ease-out';
+      document.documentElement.style.opacity = '0';
+      document.documentElement.style.transform = 'translateY(30px)';
+
+      // 动画结束后跳转到指定页面
+      setTimeout(() => {
+        window.location.href = '<%=config.root%>archives';
+      }, 500);
+    }
+  }
+
+  // 判断是否滚动到底部的辅助函数
+  function isScrollToBottom() {
+    // 页面总高度 = 文档高度 - 视口高度
+    const documentHeight = document.documentElement.scrollHeight;
+    const viewportHeight = window.innerHeight;
+    // 滚动条距离底部的距离（预留20px容错，避免因浏览器差异触发不灵敏）
+    const scrollBottom = documentHeight - (window.scrollY + viewportHeight);
+    // 当滚动到底部（距离底部<20px）时返回true
+    return scrollBottom < 20;
+  }
+
+  // 添加滚动事件监听器
+  window.addEventListener('scroll', handleScrollToBottom);
+</script>
+
+<!-- 简化样式 - 移除多余边框/阴影 -->
+<style>
+  /* 滚动提示的弹跳动画（兼容无Tailwind的场景） */
+  .animate-bounce {
+    animation: bounce 1.5s infinite;
+  }
+
+  @keyframes bounce {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+</style>

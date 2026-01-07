@@ -15,7 +15,7 @@ const archivesList = list_archives({ show_count: false, class: 'archive-list' })
 
     <!-- Atom 订阅链接 -->
     <% if (theme.atom !== undefined) { %>
-      <div class="bg-primary/5 rounded-lg p-4 border border-primary/10 flex items-center gap-2">
+      <div class="bg-primary/5 rounded-lg p-4 flex items-center gap-2">
         <i class="fa fa-rss text-primary"></i>
         <p class="text-sm text-gray-700">
           The feed is available via 
@@ -27,8 +27,8 @@ const archivesList = list_archives({ show_count: false, class: 'archive-list' })
     <!-- 分类/标签/归档 网格布局 -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <!-- 分类模块 -->
-      <aside class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-soft transition-all duration-300">
-        <h2 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100 flex items-center gap-2">
+      <aside class="bg-white rounded-xl p-5 transition-all duration-300">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4 pb-2 flex items-center gap-2">
           <i class="fa fa-tags text-primary/80"></i>
           Categories
         </h2>
@@ -42,8 +42,8 @@ const archivesList = list_archives({ show_count: false, class: 'archive-list' })
       </aside>
 
       <!-- 标签模块 -->
-      <aside class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-soft transition-all duration-300">
-        <h2 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100 flex items-center gap-2">
+      <aside class="bg-white rounded-xl p-5 transition-all duration-300">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4 pb-2 flex items-center gap-2">
           <i class="fa fa-hashtag text-primary/80"></i>
           Tags
         </h2>
@@ -57,8 +57,8 @@ const archivesList = list_archives({ show_count: false, class: 'archive-list' })
       </aside>
 
       <!-- 归档模块 -->
-      <aside class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-soft transition-all duration-300">
-        <h2 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100 flex items-center gap-2">
+      <aside class="bg-white rounded-xl p-5 transition-all duration-300">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4 pb-2 flex items-center gap-2">
           <i class="fa fa-archive text-primary/80"></i>
           Archives
         </h2>
@@ -84,7 +84,7 @@ const archivesList = list_archives({ show_count: false, class: 'archive-list' })
     <!-- 文章列表 -->
     <div class="space-y-3 mb-8">
       <% page.posts.each(article => { %>
-        <div class="archive-item group p-4 bg-white rounded-lg border border-gray-100 hover:shadow-sm transition-all duration-300">
+        <div class="archive-item group p-4 bg-white rounded-lg transition-all duration-300">
           <a href="<%=url_for(article.path)%>" class="text-gray-800 hover:text-primary font-medium transition-colors duration-300">
             <%=article.title%>
           </a>
@@ -106,9 +106,9 @@ const archivesList = list_archives({ show_count: false, class: 'archive-list' })
         next_text: '<i class="fa fa-chevron-right"></i>',
         wrap_class: 'pagination',
         active_class: 'bg-primary text-white',
-        page_class: 'px-3 py-1.5 rounded-md border border-gray-200 hover:border-primary hover:text-primary transition-colors duration-300',
-        prev_class: 'px-3 py-1.5 rounded-md border border-gray-200 hover:border-primary hover:text-primary transition-colors duration-300',
-        next_class: 'px-3 py-1.5 rounded-md border border-gray-200 hover:border-primary hover:text-primary transition-colors duration-300'
+        page_class: 'px-3 py-1.5 rounded-md hover:text-primary transition-colors duration-300',
+        prev_class: 'px-3 py-1.5 rounded-md hover:text-primary transition-colors duration-300',
+        next_class: 'px-3 py-1.5 rounded-md hover:text-primary transition-colors duration-300'
       })%>
     </div>
 <% } %>

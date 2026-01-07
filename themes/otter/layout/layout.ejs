@@ -29,9 +29,6 @@ pageTitle += ' | ' + config.title; // 替换 [] 为更现代的 | 分隔符
           },
           fontFamily: {
             sans: ['Inter', 'system-ui', 'sans-serif'], // 现代无衬线字体
-          },
-          boxShadow: {
-            'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)', // 柔和阴影
           }
         },
       }
@@ -56,9 +53,9 @@ pageTitle += ' | ' + config.title; // 替换 [] 为更现代的 | 分隔符
   <% } %>
 </head>
 
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col bg-white">
   <!-- 导航栏：现代悬浮感 + 主色高亮 -->
-  <header id="menu-outer" class="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-sm shadow-soft py-5 border-b border-gray-100">
+  <header id="menu-outer" class="sticky top-0 z-50 w-full bg-white backdrop-blur-sm py-5">
     <div id="menu-inner" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- 导航容器：增加对齐和响应式 -->
       <nav class="flex flex-wrap items-center justify-between gap-4 md:gap-8">
@@ -72,11 +69,10 @@ pageTitle += ' | ' + config.title; // 替换 [] 为更现代的 | 分隔符
           <% Object.keys(theme.menu).forEach(key=> { %>
             <a 
               href="<%=theme.menu[key]%>"
-              class="text-neutral hover:text-primary hover:underline underline-offset-4 text-sm sm:text-base font-medium py-1 relative group"
+              class="text-neutral hover:text-primary underline-offset-4 text-sm sm:text-base font-medium py-1 relative group"
             >
               <%=key%>
               <!-- 现代下划线微动效（可选） -->
-              <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
             </a>
           <% }); %>
         </div>
@@ -88,7 +84,7 @@ pageTitle += ' | ' + config.title; // 替换 [] 为更现代的 | 分隔符
   <main id="content-outer" class="flex-grow py-8 md:py-12">
     <div id="content-inner" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- 内容容器：现代卡片样式 -->
-      <div class="bg-white rounded-2xl shadow-soft p-6 md:p-8 primary/5">
+      <div class="bg-white rounded-2xl p-6 md:p-8 primary/5">
         <%- body %>
       </div>
     </div>
@@ -100,7 +96,7 @@ pageTitle += ' | ' + config.title; // 替换 [] 为更现代的 | 分隔符
       <!-- 第一行：核心信息 -->
       <p class="text-neutral text-sm md:text-base leading-relaxed mb-4">
         Site by <span class="font-medium text-gray-900"><%=config.author%></span> · Built with 
-        <a href="http://hexo.io" class="text-primary hover:text-primary/80 underline-offset-2 hover:underline">Hexo</a>
+        <a href="http://hexo.io" class="text-primary hover:text-primary/80 underline-offset-2">Hexo</a>
       </p>
       
       <!-- 第二行：导航 + 版权 -->
