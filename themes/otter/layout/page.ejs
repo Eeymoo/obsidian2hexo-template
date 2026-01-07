@@ -1,0 +1,104 @@
+<!-- 单页/文章详情主体 -->
+<article id="page" class="w-full mt-6">
+  <!-- 文章/页面标题：现代排版 + 视觉层次 -->
+  <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-100">
+    <%=page.title%>
+  </h1>
+
+  <!-- 可选：文章元信息（日期/作者/标签），仅文章页显示 -->
+  <% if (page.date || page.author || (page.tags && page.tags.length > 0)) { %>
+    <div class="flex flex-wrap items-center gap-4 mb-6 text-sm text-gray-500">
+      <% if (page.date) { %>
+        <span class="flex items-center gap-1.5">
+          <i class="fa fa-calendar-o text-primary/70"></i>
+          <%=date(page.date)%>
+        </span>
+      <% } %>
+      <% if (page.author || config.author) { %>
+        <span class="flex items-center gap-1.5">
+          <i class="fa fa-user-o text-primary/70"></i>
+          <%=page.author || config.author%>
+        </span>
+      <% } %>
+      <% if (page.tags && page.tags.length > 0) { %>
+        <span class="flex items-center gap-1.5">
+          <i class="fa fa-tags text-primary/70"></i>
+          <% page.tags.each((tag, index) => { %>
+            <a href="<%=url_for(tag.path)%>" class="text-primary hover:text-primary/80 transition-colors duration-300">
+              <%=tag.name%>
+            </a><% if (index < page.tags.length - 1) { %>, <% } %>
+          <% }) %>
+        </span>
+      <% } %>
+    </div>
+  <% } %>
+
+  <!-- 正文内容容器：优化阅读体验 + 空内容提示 -->
+  <div class="prose prose-lg max-w-none text-gray-700 leading-relaxed">
+    <% if (page.content) { %>
+      <%-page.content%>
+    <% } else { %>
+      <div class="bg-gray-50 rounded-xl border border-gray-100 p-8 text-center">
+        <i class="fa fa-file-text-o text-primary/70 text-2xl mb-3"></i>
+        <p class="text-gray-500">No content available for this page.</p>
+      </div>
+    <% } %>
+  </div>
+</article>
+
+<!-- 分页控件：统一现代样式（仅在有分页时显示） -->
+<% if (paginator && (paginator.prev || paginator.next)) { %>
+  <div id="paginator" class="mt-10 flex justify-center items-center gap-3 py-4">
+    <%-paginator({
+      // 自定义分页文本（图标化更现代）
+      prev_text: '<i class="fa fa-chevron-left mr-1"></i> Previous',
+      next_text: 'Next <i class="fa fa-chevron-right ml-1"></i>',
+      // 样式类自定义
+      wrap_class: 'pagination flex flex-wrap justify-center gap-2',
+      active_class: 'bg-primary text-white px-4 py-2 rounded-lg border border-primary',
+      page_class: 'px-4 py-2 rounded-lg border border-gray-200 hover:border-primary hover:text-primary transition-all duration-300',
+      prev_class: 'px-4 py-2 rounded-lg border border-gray-200 hover:border-primary hover:text-primary transition-all duration-300',
+      next_class: 'px-4 py-2 rounded-lg border border-gray-200 hover:border-primary hover:text-primary transition-all duration-300',
+      disabled_class: 'px-4 py-2 rounded-lg border border-gray-100 text-gray-400 cursor-not-allowed'
+    })%>
+  </div>
+<% } %>
+
+<!-- 补充：优化正文内容的基础样式，适配现代阅读体验 -->
+<style type="text/tailwindcss">
+  @layer components {
+    /* 重置分页默认列表样式 */
+    .pagination {
+      @apply flex flex-wrap justify-center gap-1;
+    }
+    .pagination li {
+      @apply list-none;
+    }
+
+    /* 正文内容样式优化（覆盖默认 Markdown/HTML 样式） */
+    .prose {
+      @apply max-w-none;
+    }
+    /* 正文标题样式 */
+    .prose h2 { @apply text-2xl font-semibold text-gray-800 mt-8 mb-4; }
+    .prose h3 { @apply text-xl font-semibold text-gray-800 mt-6 mb-3; }
+    .prose h4 { @apply text-lg font-semibold text-gray-800 mt-5 mb-2; }
+    /* 正文链接样式 */
+    .prose a { @apply text-primary hover:text-primary/80 underline-offset-2 hover:underline transition-colors duration-300; }
+    /* 正文图片样式 */
+    .prose img { @apply rounded-xl shadow-sm my-6 mx-auto max-w-full; }
+    /* 正文列表样式 */
+    .prose ul, .prose ol { @apply pl-6 my-4 space-y-2; }
+    /* 正文引用样式 */
+    .prose blockquote { @apply border-l-4 border-primary/30 bg-primary/5 pl-4 py-2 my-4 italic text-gray-600; }
+    /* 正文代码样式 */
+    .prose code { @apply bg-gray-100 px-1 py-0.5 rounded text-gray-800; }
+    .prose pre { @apply bg-gray-900 text-gray-100 p-4 rounded-xl my-4 overflow-x-auto; }
+    /* 正文表格样式 */
+    .prose table { @apply w-full my-6 border-collapse; }
+    .prose th, .prose td { @apply border border-gray-200 px-4 py-2; }
+    .prose th { @apply bg-gray-50 font-medium; }
+    /* 正文段落间距 */
+    .prose p { @apply my-4; }
+  }
+</style>

@@ -1,0 +1,139 @@
+<%
+const categoriesList = list_categories({ show_count: false, class: 'category-list' });
+const tagsList = list_tags({ show_count: false, class: 'tag-list' });
+const archivesList = list_archives({ show_count: false, class: 'archive-list' });
+%>
+
+<% if (is_year() === false) { %>
+  <!-- 归档/分类/标签侧边栏模块 -->
+  <div id="archive" class="w-full mt-8 space-y-6">
+    <!-- 模块主标题 -->
+    <h1 class="text-2xl font-semibold text-gray-900 flex items-center gap-2">
+      <i class="fa fa-folder-open text-primary"></i>
+      Archives & Categories
+    </h1>
+
+    <!-- Atom 订阅链接 -->
+    <% if (theme.atom !== undefined) { %>
+      <div class="bg-primary/5 rounded-lg p-4 border border-primary/10 flex items-center gap-2">
+        <i class="fa fa-rss text-primary"></i>
+        <p class="text-sm text-gray-700">
+          The feed is available via 
+          <a href="<%=theme.atom%>" class="text-primary hover:text-primary/80 font-medium underline-offset-2 hover:underline">atom</a>.
+        </p>
+      </div>
+    <% } %>
+
+    <!-- 分类/标签/归档 网格布局 -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <!-- 分类模块 -->
+      <aside class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-soft transition-all duration-300">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100 flex items-center gap-2">
+          <i class="fa fa-tags text-primary/80"></i>
+          Categories
+        </h2>
+        <% if (categoriesList !== "") { %>
+          <div class="category-list space-y-2 text-sm">
+            <%-categoriesList%>
+          </div>
+        <% } else { %>
+          <p class="text-gray-500 text-sm italic">None.</p>
+        <% } %>
+      </aside>
+
+      <!-- 标签模块 -->
+      <aside class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-soft transition-all duration-300">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100 flex items-center gap-2">
+          <i class="fa fa-hashtag text-primary/80"></i>
+          Tags
+        </h2>
+        <% if (tagsList !== "") { %>
+          <div class="tag-list space-y-2 text-sm">
+            <%-tagsList%>
+          </div>
+        <% } else { %>
+          <p class="text-gray-500 text-sm italic">None.</p>
+        <% } %>
+      </aside>
+
+      <!-- 归档模块 -->
+      <aside class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-soft transition-all duration-300">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100 flex items-center gap-2">
+          <i class="fa fa-archive text-primary/80"></i>
+          Archives
+        </h2>
+        <% if (archivesList !== "") { %>
+          <div class="archive-list space-y-2 text-sm">
+            <%-archivesList%>
+          </div>
+        <% } else { %>
+          <p class="text-gray-500 text-sm italic">None.</p>
+        <% } %>
+      </aside>
+    </div>
+  </div>
+<% } else { %>
+  <!-- 年份归档详情页 -->
+  <div class="w-full mt-6">
+    <!-- 归档标题 -->
+    <h1 class="text-2xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+      <i class="fa fa-calendar text-primary"></i>
+      <%=page.month + '/' + page.year%>
+    </h1>
+
+    <!-- 文章列表 -->
+    <div class="space-y-3 mb-8">
+      <% page.posts.each(article => { %>
+        <div class="archive-item group p-4 bg-white rounded-lg border border-gray-100 hover:shadow-sm transition-all duration-300">
+          <a href="<%=url_for(article.path)%>" class="text-gray-800 hover:text-primary font-medium transition-colors duration-300">
+            <%=article.title%>
+          </a>
+          <time 
+            datetime="<%=date_xml(article.date)%>" 
+            class="block mt-1 text-sm text-gray-500 flex items-center gap-1.5"
+          >
+            <i class="fa fa-clock-o text-primary/70"></i>
+            <%=date(article.date)%>
+          </time>
+        </div>
+      <% }) %>
+    </div>
+
+    <!-- 分页控件 -->
+    <div id="paginator" class="flex justify-center items-center gap-3 py-4">
+      <%-paginator({
+        prev_text: '<i class="fa fa-chevron-left"></i>',
+        next_text: '<i class="fa fa-chevron-right"></i>',
+        wrap_class: 'pagination',
+        active_class: 'bg-primary text-white',
+        page_class: 'px-3 py-1.5 rounded-md border border-gray-200 hover:border-primary hover:text-primary transition-colors duration-300',
+        prev_class: 'px-3 py-1.5 rounded-md border border-gray-200 hover:border-primary hover:text-primary transition-colors duration-300',
+        next_class: 'px-3 py-1.5 rounded-md border border-gray-200 hover:border-primary hover:text-primary transition-colors duration-300'
+      })%>
+    </div>
+<% } %>
+
+<!-- 补充：全局样式，优化 Hexo 默认生成的列表样式 -->
+<style type="text/tailwindcss">
+  @layer components {
+    /* 分类列表样式 */
+    .category-list-item a {
+      @apply text-gray-700 hover:text-primary transition-colors duration-300 block py-1 hover:pl-1;
+    }
+    /* 标签列表样式 */
+    .tag-list-item a {
+      @apply text-gray-700 hover:text-primary transition-colors duration-300 block py-1 hover:pl-1;
+    }
+    /* 归档列表样式 */
+    .archive-list-item a {
+      @apply text-gray-700 hover:text-primary transition-colors duration-300 block py-1 hover:pl-1;
+    }
+    /* 分页默认样式重置 */
+    .pagination {
+      @apply flex gap-1;
+    }
+    .pagination li {
+      @apply list-none;
+    }
+  }
+</style>

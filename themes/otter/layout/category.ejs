@@ -1,0 +1,73 @@
+<!-- 分类详情页主体 -->
+<div id="category" class="w-full mt-6">
+  <!-- 分类标题：现代风格排版 + 图标点缀 -->
+  <h1 class="text-2xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+    <i class="fa fa-folder text-primary"></i>
+    <%=page.category%>
+  </h1>
+
+  <!-- 文章列表容器：统一间距 -->
+  <div class="space-y-3 mb-8">
+    <% page.posts.each(article => { %>
+      <!-- 单篇文章项：现代卡片样式 + hover 交互 -->
+      <div class="category-item group p-4 bg-white rounded-lg border border-gray-100 hover:shadow-sm transition-all duration-300">
+        <!-- 文章标题链接 -->
+        <a 
+          href="<%=url_for(article.path)%>" 
+          class="text-gray-800 hover:text-primary font-medium transition-colors duration-300"
+        >
+          <%=article.title%>
+        </a>
+        <!-- 发布日期：优化样式 + 图标点缀 -->
+        <time 
+          datetime="<%=date_xml(article.date)%>" 
+          class="block mt-1 text-sm text-gray-500 flex items-center gap-1.5"
+        >
+          <i class="fa fa-calendar-o text-primary/70"></i>
+          <%=date(article.date)%>
+        </time>
+      </div>
+    <% }); %>
+  </div>
+</div>
+
+<!-- 分页控件：自定义现代样式 -->
+<div id="paginator" class="flex justify-center items-center gap-3 py-4">
+  <%-paginator({
+    // 自定义分页文本（图标化更现代）
+    prev_text: '<i class="fa fa-chevron-left"></i>',
+    next_text: '<i class="fa fa-chevron-right"></i>',
+    // 样式类自定义
+    wrap_class: 'pagination flex gap-1',
+    active_class: 'bg-primary text-white px-3 py-1.5 rounded-md border border-primary',
+    page_class: 'px-3 py-1.5 rounded-md border border-gray-200 hover:border-primary hover:text-primary transition-colors duration-300',
+    prev_class: 'px-3 py-1.5 rounded-md border border-gray-200 hover:border-primary hover:text-primary transition-colors duration-300',
+    next_class: 'px-3 py-1.5 rounded-md border border-gray-200 hover:border-primary hover:text-primary transition-colors duration-300',
+    disabled_class: 'px-3 py-1.5 rounded-md border border-gray-100 text-gray-400 cursor-not-allowed'
+  })%>
+</div>
+
+<!-- 补充：重置分页默认样式，保证美观 -->
+<style type="text/tailwindcss">
+  @layer components {
+    /* 重置分页默认列表样式 */
+    .pagination {
+      @apply flex flex-wrap justify-center gap-1;
+    }
+    .pagination li {
+      @apply list-none;
+    }
+    /* 空状态样式（可选：如果分类下无文章时添加） */
+    .empty-category {
+      @apply text-gray-500 text-center py-8 bg-gray-50 rounded-xl border border-gray-100;
+    }
+  }
+</style>
+
+<!-- 可选：添加空状态处理（如果分类下无文章） -->
+<% if (page.posts.length === 0) { %>
+  <div class="empty-category">
+    <i class="fa fa-info-circle text-primary/70 text-xl mb-2"></i>
+    <p>No articles in this category yet.</p>
+  </div>
+<% } %>

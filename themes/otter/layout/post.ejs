@@ -1,0 +1,220 @@
+<!-- 单页/文章详情主体 -->
+<article id="page" class="w-full mt-6">
+  <!-- 文章/页面标题：现代排版 + 视觉层次 -->
+  <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-100">
+    <%=page.title%>
+  </h1>
+
+  <!-- 正文内容容器：优化阅读体验 -->
+  <div class="prose prose-lg max-w-none text-gray-700 leading-relaxed page-content">
+    <%-page.content%>
+  </div>
+</article>
+
+<!-- 分页控件：统一现代样式 -->
+<div id="paginator" class="mt-10 flex justify-center items-center gap-3 py-4">
+  <%-paginator({
+    // 自定义分页文本（图标化更现代）
+    prev_text: '<i class="fa-solid fa-chevron-left mr-1"></i> Previous',
+    next_text: 'Next <i class="fa-solid fa-chevron-right ml-1"></i>',
+    // 样式类自定义
+    wrap_class: 'pagination flex flex-wrap justify-center gap-2',
+    active_class: 'bg-primary text-white px-4 py-2 rounded-lg border border-primary',
+    page_class: 'px-4 py-2 rounded-lg border border-gray-200 hover:border-primary hover:text-primary transition-all duration-300',
+    prev_class: 'px-4 py-2 rounded-lg border border-gray-200 hover:border-primary hover:text-primary transition-all duration-300',
+    next_class: 'px-4 py-2 rounded-lg border border-gray-200 hover:border-primary hover:text-primary transition-all duration-300',
+    disabled_class: 'px-4 py-2 rounded-lg border border-gray-100 text-gray-400 cursor-not-allowed'
+  })%>
+</div>
+
+<!-- 引入Prism.js语法高亮库（CDN方式，生产环境建议本地部署） -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+<!-- 按需引入常用语言支持（根据你的内容调整） -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-html.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-css.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-json.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-php.min.js"></script>
+<!-- 复制代码插件 -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.css" rel="stylesheet">
+
+<!-- 补充：优化正文内容的基础样式，适配现代阅读体验 -->
+<style type="text/tailwindcss">
+  @layer components {
+    /* 重置分页默认列表样式 */
+    .pagination {
+      @apply flex flex-wrap justify-center gap-1;
+    }
+    .pagination li {
+      @apply list-none;
+    }
+
+    /* 正文内容样式优化（覆盖默认 Markdown/Html 样式） */
+    .prose {
+      @apply max-w-none;
+    }
+    
+    /* 正文标题样式 - 增强层级和响应式 */
+    .prose h2 {
+      @apply text-2xl md:text-[clamp(1.5rem,3vw,1.75rem)] font-semibold text-gray-800 mt-8 mb-4 scroll-mt-20;
+    }
+    .prose h3 {
+      @apply text-xl md:text-[clamp(1.25rem,2.5vw,1.5rem)] font-semibold text-gray-800 mt-6 mb-3 scroll-mt-20;
+    }
+    
+    /* 正文链接样式 - 增强交互体验 */
+    .prose a {
+      @apply text-primary hover:text-primary/80 underline-offset-2 hover:underline transition-colors duration-200;
+      @apply focus:outline-none focus:ring-2 focus:ring-primary/30 focus:rounded; /* 无障碍支持 */
+    }
+    
+    /* 正文图片样式 - 响应式 + 懒加载友好 */
+    .prose img {
+      @apply rounded-xl shadow-sm my-6 mx-auto max-w-full h-auto;
+      @apply transition-all duration-300 hover:shadow-md; /* 轻微悬浮效果 */
+    }
+    
+    /* 正文列表样式 - 增强可读性 */
+    .prose ul {
+      @apply pl-6 my-4 space-y-2 list-disc;
+    }
+    .prose ol {
+      @apply pl-6 my-4 space-y-2 list-decimal;
+    }
+    .prose li::marker {
+      @apply text-primary/70; /* 列表标记着色 */
+    }
+    
+    /* 正文引用样式 - 增强视觉层次 */
+    .prose blockquote {
+      @apply border-l-4 border-primary/30 bg-primary/5 pl-4 py-2 my-4 italic text-gray-600 rounded-r-lg;
+    }
+    
+    /* 正文代码样式 - 重点优化：集成Prism.js高亮 */
+    /* 行内代码 */
+    .prose code:not([class*="language-"]) {
+      @apply bg-gray-100 px-1.5 py-0.5 rounded text-gray-800 font-mono text-sm;
+    }
+    /* 代码块容器 */
+    .prose pre {
+      @apply bg-gray-900 text-gray-100 p-0 my-6 rounded-xl overflow-hidden shadow-lg border border-gray-800;
+      @apply relative; /* 为复制按钮定位 */
+    }
+    /* Prism.js 代码块内容 */
+    .prose pre > code {
+      @apply bg-transparent p-4 block overflow-x-auto font-mono text-sm leading-relaxed;
+    }
+    /* 代码块语言标识（Prism.js自动生成） */
+    .prose pre::before {
+      content: attr(data-language);
+      @apply absolute top-0 right-0 bg-gray-800 text-gray-400 text-xs px-3 py-1.5 rounded-bl-lg;
+    }
+    /* 复制按钮样式（Prism.js插件） */
+    .prose pre .copy-button {
+      @apply absolute top-0 left-0 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white;
+      @apply px-2 py-1.5 text-xs rounded-br-lg transition-colors duration-200 cursor-pointer;
+      @apply flex items-center gap-1;
+    }
+    .prose pre .copy-button svg {
+      @apply w-3.5 h-3.5;
+    }
+    /* 复制成功提示 */
+    .prose pre .copy-button.success {
+      @apply bg-green-700 text-white;
+    }
+    
+    /* 正文表格样式 - 增强可读性 */
+    .prose table {
+      @apply w-full my-6 border-collapse rounded-lg overflow-hidden shadow-sm;
+    }
+    .prose th, .prose td {
+      @apply border border-gray-200 px-4 py-2;
+    }
+    .prose th {
+      @apply bg-gray-50 font-medium text-left;
+    }
+    .prose tr:nth-child(even) {
+      @apply bg-gray-50; /* 隔行变色 */
+    }
+    
+    /* 正文段落样式 - 优化行高和间距 */
+    .prose p {
+      @apply my-4 leading-relaxed;
+    }
+    
+    /* 分页按钮交互优化 */
+    .pagination .page_class:not(.disabled_class):hover,
+    .pagination .prev_class:not(.disabled_class):hover,
+    .pagination .next_class:not(.disabled_class):hover {
+      @apply transform hover:-translate-y-0.5;
+    }
+    
+    /* 响应式适配小屏幕 */
+    @media (max-width: 640px) {
+      .prose {
+        @apply px-2;
+      }
+      .pagination {
+        @apply gap-1;
+      }
+      .pagination li {
+        @apply text-sm;
+      }
+      .pagination .page_class,
+      .pagination .prev_class,
+      .pagination .next_class {
+        @apply px-3 py-1.5;
+      }
+      /* 小屏幕代码块优化 */
+      .prose pre > code {
+        @apply p-3 text-xs;
+      }
+    }
+  }
+</style>
+
+<!-- 初始化Prism.js并优化代码块 -->
+<script>
+  // 等待DOM加载完成
+  document.addEventListener('DOMContentLoaded', function() {
+    // 1. 初始化Prism.js语法高亮
+    Prism.highlightAll();
+    
+    // 2. 为分页添加ARIA属性，提升无障碍性
+    const pagination = document.querySelector('.pagination');
+    if (pagination) {
+      pagination.setAttribute('role', 'navigation');
+      pagination.setAttribute('aria-label', 'Page navigation');
+      
+      // 为当前页添加aria-current属性
+      const activePage = pagination.querySelector('.active_class');
+      if (activePage) {
+        activePage.setAttribute('aria-current', 'page');
+      }
+      
+      // 为禁用的按钮添加aria-disabled属性
+      const disabledButtons = pagination.querySelectorAll('.disabled_class');
+      disabledButtons.forEach(btn => {
+        btn.setAttribute('aria-disabled', 'true');
+      });
+    }
+
+    // 3. 优化代码块：为没有指定语言的代码块添加默认标识
+    const codeBlocks = document.querySelectorAll('pre:not([data-language])');
+    codeBlocks.forEach(block => {
+      // 获取code标签的class，提取语言
+      const codeEl = block.querySelector('code');
+      let lang = 'code';
+      if (codeEl) {
+        const langClass = Array.from(codeEl.classList).find(cls => cls.startsWith('language-'));
+        if (langClass) {
+          lang = langClass.replace('language-', '');
+        }
+      }
+      block.setAttribute('data-language', lang);
+    });
+  });
+</script>

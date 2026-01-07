@@ -53,3 +53,5 @@ Thumbs.db
 
 # 忽略Hexo的测试文件夹
 test/
+
+source/_posts/

@@ -1,0 +1,121 @@
+<% 
+var pageTitle = page.title || config.subtitle || ''; 
+if (is_archive()) pageTitle = 'Archives'; 
+if (is_tag()) pageTitle = 'Tag: ' + page.tag; 
+if (is_category()) pageTitle = 'Category: ' + page.category; 
+if (is_month()) pageTitle += ': ' + page.month + '/' + page.year; 
+if (is_year()) pageTitle += ': ' + page.year; 
+pageTitle += ' | ' + config.title; // 替换 [] 为更现代的 | 分隔符
+%>
+
+<!DOCTYPE html>
+<html lang="<%=config.language%>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 移动端适配必备 -->
+  <title><%=pageTitle%></title>
+  
+  <!-- Tailwind CSS + 预设配置 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet"> <!-- 增加图标支持 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0e83cd', // 你的主色
+            secondary: '#f8fafc', // 辅助浅背景
+            neutral: '#64748b', // 中性文本色
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'], // 现代无衬线字体
+          },
+          boxShadow: {
+            'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)', // 柔和阴影
+          }
+        },
+      }
+    }
+  </script>
+  <!-- 引入现代字体 + 基础样式重置 -->
+  <style type="text/tailwindcss">
+    @layer base {
+      body {
+        @apply font-sans text-gray-800 bg-secondary antialiased;
+      }
+      a {
+        @apply transition-all duration-300; /* 全局链接过渡 */
+      }
+    }
+  </style>
+
+  <% if (theme.stylesheets !==undefined && theme.stylesheets.length> 0) { %>
+    <% theme.stylesheets.forEach(url=> { %>
+      <link rel="stylesheet" href="<%=url%>">
+    <% }); %>
+  <% } %>
+</head>
+
+<body class="min-h-screen flex flex-col">
+  <!-- 导航栏：现代悬浮感 + 主色高亮 -->
+  <header id="menu-outer" class="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-sm shadow-soft py-5 border-b border-gray-100">
+    <div id="menu-inner" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- 导航容器：增加对齐和响应式 -->
+      <nav class="flex flex-wrap items-center justify-between gap-4 md:gap-8">
+        <!-- 可选：添加博客 Logo/标题 -->
+        <a href="<%=config.root%>" class="text-xl font-semibold text-primary">
+          <%=config.title%>
+        </a>
+        
+        <!-- 导航链接组 -->
+        <div class="flex flex-wrap items-center gap-5 md:gap-7">
+          <% Object.keys(theme.menu).forEach(key=> { %>
+            <a 
+              href="<%=theme.menu[key]%>"
+              class="text-neutral hover:text-primary hover:underline underline-offset-4 text-sm sm:text-base font-medium py-1 relative group"
+            >
+              <%=key%>
+              <!-- 现代下划线微动效（可选） -->
+              <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+            </a>
+          <% }); %>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 主内容区：现代卡片质感 + 合理间距 -->
+  <main id="content-outer" class="flex-grow py-8 md:py-12">
+    <div id="content-inner" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- 内容容器：现代卡片样式 -->
+      <div class="bg-white rounded-2xl shadow-soft p-6 md:p-8 primary/5">
+        <%- body %>
+      </div>
+    </div>
+  </main>
+
+  <!-- 页脚：现代简约 + 信息分层 -->
+  <footer id="bottom-outer" class="w-full bg-white border-t border-gray-100 py-8 md:py-10 mt-auto">
+    <div id="bottom-inner" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <!-- 第一行：核心信息 -->
+      <p class="text-neutral text-sm md:text-base leading-relaxed mb-4">
+        Site by <span class="font-medium text-gray-900"><%=config.author%></span> · Built with 
+        <a href="http://hexo.io" class="text-primary hover:text-primary/80 underline-offset-2 hover:underline">Hexo</a>
+      </p>
+      
+      <!-- 第二行：导航 + 版权 -->
+      <div class="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-sm text-neutral">
+        <a href="<%=config.root%>" class="hover:text-primary">Home</a>
+        <span class="text-gray-300">•</span>
+        <span>© <%=new Date().getFullYear()%> <%=config.title%></span>
+      </div>
+    </div>
+  </footer>
+
+  <% if (theme.scripts !==undefined && theme.scripts.length> 0) { %>
+    <% theme.scripts.forEach(url=> { %>
+      <script src="<%=url%>"></script>
+    <% }); %>
+  <% } %>
+</body>
+</html>
