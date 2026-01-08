@@ -1,0 +1,38 @@
+<% if (site.posts.length > 0) { %>
+  <div id="recent-posts" class="w-full mt-6">
+    <!-- 列表标题：现代风格排版 -->
+    <h1 class="text-2xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+      <i class="fa fa-clock-o text-primary"></i> <!-- 增加图标，提升视觉层次 -->
+      Recent Posts
+    </h1>
+    
+    <!-- 文章列表容器：统一间距和布局 -->
+    <div class="space-y-4">
+      <% site.posts.sort('date', -1).limit(10).each(post=> { %>
+        <!-- 单篇文章项：现代卡片样式 -->
+        <div class="group p-5 bg-white rounded-xl hover:shadow-soft transition-all duration-300">
+          <!-- 文章标题区域 -->
+          <div class="mb-3">
+            <a 
+              href="<%=url_for(post.path)%>" 
+              class="text-lg font-medium text-gray-800 hover:text-primary transition-colors duration-300 inline-block"
+            >
+              <%=post.title%>
+              <!-- 现代下划线效果：替代虚线边框 -->
+              <span class="block w-full h-0.5 bg-primary/0 group-hover:bg-primary/20 transition-all duration-300 mt-1"></span>
+            </a>
+          </div>
+          
+          <!-- 日期信息：优化样式和排版 -->
+          <time 
+            class="text-sm text-gray-500 flex items-center gap-1.5" 
+            datetime="<%=post.date.toJSON()%>"
+          >
+            <i class="fa fa-calendar-o text-primary/70"></i>
+            <%=date(post.date)%>
+          </time>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+<% } %>
