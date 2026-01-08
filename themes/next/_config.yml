@@ -178,7 +178,7 @@ links_settings:
   layout: block
 
 links:
-  #Title: https://example.com
+  jellyfin 镜像仓库: https://jellyfin-cn.eeymoo.com/
 
 # Table of Contents in the Sidebar
 # Front-matter variable (nonsupport wrap expand_all).
