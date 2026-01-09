@@ -1,6 +1,7 @@
 
 # html lang
 language: en
+title: Eeymoo' Blog
 
 # main menu navigation
 menu:
@@ -9,6 +10,24 @@ menu:
   Contact: /contact
   Archives: /archives
 
+info:
+  email: eeymoo@outlook.com
+  author: Eeymoo
+  introduction: 欢迎光临，这是一个总想写出最好代码的前端开发工程师
+  avatar: https://avatars.githubusercontent.com/u/174967750?v=4
+
+  github: https://github.com/eeymoo
+  icons: 
+    fa-envelope: mailto:eeymoo@outlook.com
+    fa-github: https://github.com/eeymoo
+
+  skills:
+    - Frontend Development (HTML/CSS/JS/Tailwind)
+    - Backend Development (Node.js/Express/Next.js)
+  abouts: 
+    - This blog is built with Hexo and Tailwind CSS, focusing on sharing knowledge about web development, programming, and technology. The goal is to create a simple, modern, and easy-to-read platform for technical sharing.
+    - All articles are original (unless otherwise stated), and welcome to discuss and exchange ideas with me.
+
 # stylesheets loaded in the <head>
 stylesheets:
 - /css/otter.css
@@ -16,3 +35,4 @@ stylesheets:
 # scripts loaded in the end of the body
 scripts:
 - /js/otter.js
+
