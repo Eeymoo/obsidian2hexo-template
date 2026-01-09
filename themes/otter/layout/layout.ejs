@@ -1,5 +1,5 @@
 <% 
-var pageTitle = page.title || config.subtitle || ''; 
+var pageTitle = theme.title || config.subtitle || ''; 
 if (is_archive()) pageTitle = 'Archives'; 
 if (is_tag()) pageTitle = 'Tag: ' + page.tag; 
 if (is_category()) pageTitle = 'Category: ' + page.category; 
@@ -23,7 +23,7 @@ pageTitle += ' | ' + config.title; // 替换 [] 为更现代的 | 分隔符
       theme: {
         extend: {
           colors: {
-            primary: '#0e83cd', // 你的主色
+            primary: '#8080f7', // 你的主色
             secondary: '#f8fafc', // 辅助浅背景
             neutral: '#64748b', // 中性文本色
           },
