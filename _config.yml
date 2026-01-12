@@ -14,7 +14,7 @@ timezone: ''
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
 url: https://blog.eeymoo.com/
-permalink: blog/:hash.html
+permalink: blog/:uri.html
 permalink_defaults:
 pretty_urls:
   trailing_index: true # Set to false to remove trailing 'index.html' from permalinks
@@ -29,9 +29,6 @@ category_dir: categories
 code_dir: downloads/code
 i18n_dir: :lang
 skip_render:
-  - 模板/**
-  - 个人文件/**
-  - 工作文件/**
 
 # Writing
 new_post_name: :title.md # File name of new posts
@@ -114,11 +111,11 @@ feed:
   type: 
     - atom
     - rss2
-  path: feed.xml
+  path: atom.xml
   limit: false
   content: true
   template: 
-    - ./source/atom.xml
+    - ./template/atom.xml
 # hexo-hide-posts
 hide_posts:
   enable: true
@@ -160,11 +157,3 @@ mermaid:
   theme: default
 # hexo-translate-title
 # https://www.npmjs.com/package/hexo-translate-title
-translate_title:
-  translate_way: baidu_no_appid  # google,youdao,baidu_with_appid,baidu_no_appid
-  youdao_api_key: '' # Your youdao_api_key
-  youdao_keyfrom: xxxx-blog # Your youdao_keyfrom
-  is_need_proxy: false     # true | false
-  proxy_url: http://localhost:50018 # Your proxy_url
-  baidu_appid: '' # Your baidu_appid
-  baidu_appkey: '' # Your baidu_appkey
